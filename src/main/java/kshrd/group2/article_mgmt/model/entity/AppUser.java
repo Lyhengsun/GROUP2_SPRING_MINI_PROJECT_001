@@ -2,17 +2,13 @@ package kshrd.group2.article_mgmt.model.entity;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import kshrd.group2.article_mgmt.model.dto.response.AppUserResponse;
 import kshrd.group2.article_mgmt.model.enumeration.UserRole;
 import lombok.AllArgsConstructor;
@@ -51,6 +47,9 @@ public class AppUser extends BaseEntityAudit implements UserDetails {
 
     @Column(name = "phone_number", nullable = false, length = 15)
     private String phoneNumber;
+
+    @OneToMany
+    private Set<Comment> comments;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

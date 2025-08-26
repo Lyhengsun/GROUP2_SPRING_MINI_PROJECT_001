@@ -21,7 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class tComment extends BaseEntityAudit {
+public class Comment extends BaseEntityAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
