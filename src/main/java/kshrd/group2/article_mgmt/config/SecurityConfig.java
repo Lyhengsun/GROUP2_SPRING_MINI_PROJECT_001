@@ -33,12 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**", "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html", "/api/v1/files/**",
-                                "/swagger-ui.html",
-                                "/api/v1/files/**", "/api/v1/public/**", "/api/v1/**")
-                        .permitAll()
-                        .requestMatchers("/api/v1/instructors/**").hasRole("INSTRUCTOR")
-                        .requestMatchers("/api/v1/admins/**").hasRole("ADMIN").anyRequest()
+                                "/swagger-ui.html")
+                        .permitAll().anyRequest()
                         .authenticated())
                 .anonymous(Customizer.withDefaults())
                 .sessionManagement(
