@@ -26,11 +26,14 @@ public class BookmarkController {
     @Operation(summary = "Get all articles which has added bookmark by current user id")
     @GetMapping
     public ResponseEntity<ApiResponse<List<BookmarkResponse>>> getAllBookmarks(
-            @RequestParam(defaultValue = "1") @Valid @Min(value = 1, message = "Page must be greater than 0") Integer page,
-            @RequestParam(defaultValue = "10") @Valid @Min(value = 1, message = "Size must be greater than 0") Integer size,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection
     ) {
         try {
+            if (page < 0) throw new BadRequestException("Page index must not be less than zero");
+            if (size < 0) throw new BadRequestException("Page size must not be less than one");
+
             List<BookmarkResponse> bookmarks = bookmarkService.getAllBookmarks(page, size, sortDirection);
             ApiResponse<List<BookmarkResponse>> response = ApiResponse.<List<BookmarkResponse>>builder()
                     .success(true)

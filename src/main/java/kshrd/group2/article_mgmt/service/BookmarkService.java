@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 public interface BookmarkService {
-    List<BookmarkResponse> getAllBookmarks(@Valid @Min(value = 1, message = "Page must be greater than 0") Integer page, @Valid @Min(value = 1, message = "Size must be greater than 0") Integer size, Sort.Direction direction);
+    List<BookmarkResponse> getAllBookmarks(Integer page, Integer size, Sort.Direction direction);
 
     BookmarkResponse addBookmark(Long articleId);
 
