@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import kshrd.group2.article_mgmt.model.dto.response.BookmarkResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,4 +38,15 @@ public class Bookmark extends BaseEntityAudit {
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private AppUser user;
+
+    public BookmarkResponse toResponse() {
+        return BookmarkResponse.builder()
+                .articleId(article.getArticleId())
+                .title(article.getTitle())
+                .description(article.getDescription())
+                .userId(article.getUser().getUserId())
+                .createdAt(getCreatedAt())
+                .editedAt(getEditedAt())
+                .build();
+    }
 }
