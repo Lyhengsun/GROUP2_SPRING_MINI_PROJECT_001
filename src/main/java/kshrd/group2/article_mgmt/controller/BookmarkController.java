@@ -1,9 +1,8 @@
 package kshrd.group2.article_mgmt.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import kshrd.group2.article_mgmt.exception.BadRequestException;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
 import kshrd.group2.article_mgmt.model.dto.response.BookmarkResponse;
@@ -20,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/bookmarks")
 @Tag(name = "Bookmark")
+@SecurityRequirement(name = "bearerAuth")
 public class BookmarkController {
     private final BookmarkService bookmarkService;
 
@@ -31,6 +31,7 @@ public class BookmarkController {
             @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection
     ) {
         try {
+
             if (page < 0) throw new BadRequestException("Page index must not be less than zero");
             if (size < 0) throw new BadRequestException("Page size must not be less than one");
 
