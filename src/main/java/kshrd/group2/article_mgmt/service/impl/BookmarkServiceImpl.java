@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -60,14 +59,6 @@ public class BookmarkServiceImpl implements BookmarkService {
     }
 
     private AppUser getCurrentUser() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new BadRequestException("No authenticated user found");
-        }
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof AppUser appUser) {
-            return appUser;
-        }
-        throw new BadRequestException("Authenticated principal is not an AppUser");
+        return (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
