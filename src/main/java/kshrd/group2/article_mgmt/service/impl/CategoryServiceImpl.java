@@ -57,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse createCategory(CategoryRequest categoryRequest) {
-        if (findCategoryByName(categoryRequest.getCategoryName()) != null) throw new BadRequestException("Category already exists");
+        if (findCategoryByName(categoryRequest.getCategoryName()) != null) throw new BadRequestException("Category already exists, Please choose a different category name");
         Category category = categoryRequest.toEntity();
         category.setUser(getCurrentUser());
         return categoryRepository.save(category).toResponse();
@@ -65,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse updateCategory(Long id, CategoryRequest categoryRequest) {
-        if (findCategoryByName(categoryRequest.getCategoryName()) != null) throw new BadRequestException("Category already exists");
+        if (findCategoryByName(categoryRequest.getCategoryName()) != null) throw new BadRequestException("Category already exists, Please choose a different category name");
         Category category = findCategoryById(id);
         category.setCategoryName(categoryRequest.getCategoryName());
         return categoryRepository.save(category).toResponse();

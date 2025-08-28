@@ -44,21 +44,21 @@ public class CategoryController extends BaseController{
     @PostMapping
     @Operation(summary = "Create new category. can be used by only AUTHOR role")
     public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(@RequestBody CategoryRequest categoryRequest) {
-        return responseEntity("", categoryService.createCategory(categoryRequest));
+        return responseEntity("Created new category successfully", categoryService.createCategory(categoryRequest));
     }
 
     @PutMapping("{category-id}")
     @Operation(summary = "Update category. can be used by only AUTHOR role")
     public ResponseEntity<ApiResponse<CategoryResponse>> updateCategory(@PathVariable("category-id") Long id ,
                                                                         @RequestBody CategoryRequest categoryRequest) {
-        return responseEntity("", categoryService.updateCategory(id, categoryRequest));
+        return responseEntity("Updated category successfully", categoryService.updateCategory(id, categoryRequest));
     }
 
     @DeleteMapping("{category-id}")
     @Operation(summary = "Delete category. can be used by only AUTHOR role")
     public ResponseEntity<ApiResponse<CategoryResponse>> deleteCategory(@PathVariable("category-id") Long id) {
         categoryService.deleteCategory(id);
-        return responseEntity("");
+        return responseEntity("Deleted category successfully");
     }
 
 }
