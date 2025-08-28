@@ -1,5 +1,6 @@
 package kshrd.group2.article_mgmt.service.impl;
 
+import jakarta.transaction.Transactional;
 import kshrd.group2.article_mgmt.exception.BadRequestException;
 import kshrd.group2.article_mgmt.exception.NotFoundException;
 import kshrd.group2.article_mgmt.model.dto.response.BookmarkResponse;
@@ -36,6 +37,7 @@ public class BookmarkServiceImpl implements BookmarkService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public BookmarkResponse addBookmark(Long articleId) {
         if (bookmarkRepository.existsByUser_UserIdAndArticle_ArticleId(getCurrentUser().getUserId(), articleId)) {
@@ -53,6 +55,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         return bookmarkRepository.save(bookmark).toResponse();
     }
 
+    @Transactional
     @Override
     public void deleteBookmark(Long articleId) {
         Bookmark bookmark = bookmarkRepository.findByUser_UserIdAndArticle_ArticleId(getCurrentUser().getUserId(), articleId)

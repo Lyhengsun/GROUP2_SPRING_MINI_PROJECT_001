@@ -67,12 +67,13 @@ public class BookmarkController {
 
     @Operation(summary = "Delete bookmark on article")
     @DeleteMapping("/{articleId}")
-    public ResponseEntity<ApiResponse<String>> deleteBookmark(@PathVariable("articleId") Long articleId) {
+    public ResponseEntity<ApiResponse<Void>> deleteBookmark(@PathVariable("articleId") Long articleId) {
         try {
             bookmarkService.deleteBookmark(articleId);
-            ApiResponse<String> response = ApiResponse.<String>builder()
+            ApiResponse<Void> response = ApiResponse.<Void>builder()
                     .success(true)
                     .message("Deleted bookmark successfully")
+                    .payload(null)
                     .build();
 
             return ResponseEntity.ok(response);
