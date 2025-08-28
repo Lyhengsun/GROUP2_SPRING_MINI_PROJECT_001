@@ -49,7 +49,7 @@ public class ArticleController extends BaseController{
 
     //Update an article by id that allows only an AUTHOR role
     @PutMapping("/{articleId}")
-    @Operation(summary = "Update an article by id", description = "Can be use by only AUTHOR role")
+    @Operation(summary = "Update an article by id. Can be use by only AUTHOR role")
     public ResponseEntity<ApiResponse<ArticleResponse>> updateArticleById(@Positive @PathVariable Long articleId, @Valid @RequestBody ArticleRequest request){
         return responseEntity("Article with id: " + articleId + " is updated successfully", HttpStatus.OK, articleService.updateArticleById(articleId, request));
     }

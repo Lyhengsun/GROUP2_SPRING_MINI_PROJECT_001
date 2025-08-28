@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -83,7 +82,6 @@ public class GlobalExceptionHandler {
                 errors.put(parameterName, errorMessage.getDefaultMessage());
             }
         });
-        ;
 
         return problemDetailResponseEntity(errors, "Method Parameter Validation Failed");
     }
@@ -101,5 +99,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidException.class)
     public ResponseEntity<?> handleInvalidException(InvalidException e) {
         return problemDetailResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ProblemDetail handleForbiddenException(ForbiddenException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+        problemDetail.setTitle("Forbidden");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setProperty("timestamp", LocalDateTime.now());
+        return problemDetail;
     }
 }
