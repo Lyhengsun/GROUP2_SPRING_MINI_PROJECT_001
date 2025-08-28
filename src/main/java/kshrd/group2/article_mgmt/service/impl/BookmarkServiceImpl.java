@@ -24,7 +24,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     private final BookmarkRepository bookmarkRepository;
     @Override
     public List<BookmarkResponse> getAllBookmarks(Integer page, Integer size, Sort.Direction direction) {
-        Sort sort = Sort.by(new Sort.Order(direction, "bookmarkId").ignoreCase());
+        Sort sort = Sort.by(direction, "editedAt", "createdAt", "bookmarkId");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
         Slice<Bookmark> bookmarks = bookmarkRepository.findByUser_UserId(getCurrentUser().getUserId(), pageable);
 
@@ -35,16 +35,18 @@ public class BookmarkServiceImpl implements BookmarkService {
 
     @Override
     public BookmarkResponse addBookmark(Long articleId) {
-        Bookmark existingBookmark = bookmarkRepository.findByUser_UserIdAndArticle_ArticleId(getCurrentUser().getUserId(), articleId)
-                .orElseThrow(() -> new BadRequestException("This article has been already added"));
+        if (bookmarkRepository.existsByUser_UserIdAndArticle_ArticleId(getCurrentUser().getUserId(), articleId)) {
+            throw new BadRequestException("This article has been already added");
+        }
+
 
 //        Article article = articleRepository.findById(articleId)
 //                .orElseThrow(() -> new NotFoundException("Article not found with id: " + articleId));
 
         Bookmark bookmark = Bookmark.builder()
-                .article(existingBookmark.getArticle())
+//                .article(existingBookmark.getArticle())
 //                .article(article)
-                .user(getCurrentUser())
+//                .user(getCurrentUser())
                 .build();
 
         return bookmarkRepository.save(bookmark).toResponse();
