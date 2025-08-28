@@ -2,6 +2,8 @@ package kshrd.group2.article_mgmt.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
 import kshrd.group2.article_mgmt.model.dto.response.ArticleResponse;
 import kshrd.group2.article_mgmt.model.enumeration.ArticleProperties;
@@ -22,6 +24,13 @@ import java.util.List;
 public class ArticleController extends BaseController{
 
     private final ArticleService articleService;
+
+    // Create new article, can be used by only AUTHOR role
+    @PostMapping
+    @Operation(summary = "Create new article, can be used by only AUTHOR role")
+    public ResponseEntity<ApiResponse<ArticleResponse>> createArticle(@RequestBody @Valid ArticleRequest articleRequest) {
+        return responseEntity("Article created successfully", HttpStatus.CREATED, articleService.createArticle(articleRequest));
+    }
 
     //Get an article by id that allows all roles
     @GetMapping("/{articleId}")
