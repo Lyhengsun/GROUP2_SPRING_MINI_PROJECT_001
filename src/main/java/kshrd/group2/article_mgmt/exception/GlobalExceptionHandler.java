@@ -109,4 +109,9 @@ public class GlobalExceptionHandler {
         problemDetail.setProperty("timestamp", LocalDateTime.now());
         return problemDetail;
     }
+
+    @ExceptionHandler(DataConflictException.class)
+    public ResponseEntity<?> handleDataConflictException(DataConflictException e) {
+        return problemDetailResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+    }
 }

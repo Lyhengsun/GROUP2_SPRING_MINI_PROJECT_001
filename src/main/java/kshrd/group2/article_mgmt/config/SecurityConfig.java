@@ -43,7 +43,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.PUT, "/api/v1/articles/**").hasRole("AUTHOR")
                         .requestMatchers(HttpMethod.DELETE, "api/v1/articles/**").hasRole("AUTHOR")
-
+                        .requestMatchers("/api/v1/categories/**").hasRole("AUTHOR")
                         .anyRequest().authenticated())
                 .anonymous(Customizer.withDefaults())
                 .sessionManagement(
