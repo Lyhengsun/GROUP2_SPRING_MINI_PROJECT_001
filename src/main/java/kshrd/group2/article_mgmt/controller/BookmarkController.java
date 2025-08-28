@@ -32,8 +32,8 @@ public class BookmarkController {
     ) {
         try {
 
-            if (page < 0) throw new BadRequestException("Page index must not be less than zero");
-            if (size < 0) throw new BadRequestException("Page size must not be less than one");
+            if (page <= 0) throw new BadRequestException("Page index must not be less than zero");
+            if (size <= 0) throw new BadRequestException("Page size must not be less than one");
 
             List<BookmarkResponse> bookmarks = bookmarkService.getAllBookmarks(page, size, sortDirection);
             ApiResponse<List<BookmarkResponse>> response = ApiResponse.<List<BookmarkResponse>>builder()
