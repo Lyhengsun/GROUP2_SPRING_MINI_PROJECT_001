@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class AppUserResponse extends BaseEntityAuditResponse {
     private Long userId;
-    private String appUsername;
+    private String username;
     private String email;
     private UserRole role;
     private String address;
