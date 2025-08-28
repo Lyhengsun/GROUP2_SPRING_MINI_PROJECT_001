@@ -1,18 +1,15 @@
 package kshrd.group2.article_mgmt.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import kshrd.group2.article_mgmt.model.dto.response.ArticleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -36,4 +33,24 @@ public class Article extends BaseEntityAudit {
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private AppUser user;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CategoryArticle> categoryArticles;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments;
+
+    public ArticleResponse toResponse() {
+        return ArticleResponse.builder()
+                .articleId(articleId)
+                .title(title)
+                .description(description)
+                .userId(user.getUserId())
+                .categories(categoryArticles.stream()
+                        .map(ca -> ca.getCategory().getCategoryName())
+                        .toList())
+                .createdAt(getCreatedAt())
+                .editedAt(getEditedAt())
+                .build();
+    }
 }
