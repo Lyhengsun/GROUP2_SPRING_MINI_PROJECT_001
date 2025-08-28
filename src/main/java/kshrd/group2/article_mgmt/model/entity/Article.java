@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -35,6 +36,9 @@ public class Article extends BaseEntityAudit {
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryArticle> categoryArticles;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments;
 
     public ArticleResponse toResponse() {
         return ArticleResponse.builder()
