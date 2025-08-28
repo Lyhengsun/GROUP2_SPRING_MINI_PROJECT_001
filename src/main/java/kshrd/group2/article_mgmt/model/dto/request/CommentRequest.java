@@ -1,5 +1,7 @@
 package kshrd.group2.article_mgmt.model.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 /**
@@ -14,5 +16,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CommentRequest {
+    @NotBlank(message = "Content of comment is required")
+    @Size(max = 500, message = "Comment content must be at most 500 characters")
     private String content;
 }

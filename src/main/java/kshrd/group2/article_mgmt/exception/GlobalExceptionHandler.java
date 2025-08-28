@@ -51,7 +51,6 @@ public class GlobalExceptionHandler {
         if (title != null) {
             problemDetail.setTitle(title);
         }
-        problemDetail.setProperty("code", status.value());
         problemDetail.setProperty("timestamp", Instant.now());
         problemDetail.setDetail(error);
         return new ResponseEntity<>(problemDetail, status);
