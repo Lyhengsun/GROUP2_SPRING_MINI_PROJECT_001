@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1/bookmarks")
 @Tag(name = "Bookmark Controller")
 @SecurityRequirement(name = "bearerAuth")
-public class BookmarkController {
+public class BookmarkController extends BaseController{
     private final BookmarkService bookmarkService;
 
     @Operation(summary = "Get all articles which has added bookmark by current user id")
@@ -31,18 +31,10 @@ public class BookmarkController {
             @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection
     ) {
         try {
-
             if (page <= 0) throw new BadRequestException("Page index must not be less than zero");
             if (size <= 0) throw new BadRequestException("Page size must not be less than one");
 
-            List<BookmarkResponse> bookmarks = bookmarkService.getAllBookmarks(page, size, sortDirection);
-            ApiResponse<List<BookmarkResponse>> response = ApiResponse.<List<BookmarkResponse>>builder()
-                    .success(true)
-                    .message("Get all articles which has added bookmark successfully")
-                    .payload(bookmarks)
-                    .build();
-
-            return ResponseEntity.ok(response);
+            return responseEntity("Get all articles which has added bookmark successfully", bookmarkService.getAllBookmarks(page, size, sortDirection));
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -52,14 +44,7 @@ public class BookmarkController {
     @PostMapping("/{articleId}")
     public ResponseEntity<ApiResponse<BookmarkResponse>> addBookmark(@PathVariable("articleId") Long articleId) {
         try {
-            BookmarkResponse bookmark = bookmarkService.addBookmark(articleId);
-            ApiResponse<BookmarkResponse> response = ApiResponse.<BookmarkResponse>builder()
-                    .success(true)
-                    .message("Added bookmark successfully")
-                    .payload(bookmark)
-                    .build();
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return responseEntity("Added bookmark successfully", HttpStatus.CREATED, bookmarkService.addBookmark(articleId));
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -70,13 +55,7 @@ public class BookmarkController {
     public ResponseEntity<ApiResponse<Void>> deleteBookmark(@PathVariable("articleId") Long articleId) {
         try {
             bookmarkService.deleteBookmark(articleId);
-            ApiResponse<Void> response = ApiResponse.<Void>builder()
-                    .success(true)
-                    .message("Deleted bookmark successfully")
-                    .payload(null)
-                    .build();
-
-            return ResponseEntity.ok(response);
+            return responseEntity("Deleted bookmark successfully", HttpStatus.OK, null);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
