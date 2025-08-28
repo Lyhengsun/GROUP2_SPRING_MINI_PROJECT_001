@@ -2,6 +2,7 @@ package kshrd.group2.article_mgmt.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -31,11 +32,19 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/auths/**", "/v3/api-docs/**",
+                        .requestMatchers(
+                                "/api/v1/auths/**",
+                                "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html")
-                        .permitAll().anyRequest()
-                        .authenticated())
+                                "/swagger-ui.html"
+                        ).permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/articles/**").authenticated()
+
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/articles/**").hasRole("AUTHOR")
+                        .requestMatchers(HttpMethod.DELETE, "api/v1/articles/**").hasRole("AUTHOR")
+                        .requestMatchers("/api/v1/categories/**").hasRole("AUTHOR")
+                        .anyRequest().authenticated())
                 .anonymous(Customizer.withDefaults())
                 .sessionManagement(
                         session -> session
