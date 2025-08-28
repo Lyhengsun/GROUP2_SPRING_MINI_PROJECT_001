@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/bookmarks")
-@Tag(name = "Bookmark")
+@Tag(name = "Bookmark Controller")
 @SecurityRequirement(name = "bearerAuth")
 public class BookmarkController {
     private final BookmarkService bookmarkService;

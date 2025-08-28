@@ -19,5 +19,5 @@ public class BookmarkResponse extends BaseEntityAuditResponse {
     private String title;
     private String description;
     private Long userId;
-    private List<Category> categories;
+    private List<String> categories;
 }

@@ -6,6 +6,7 @@ import kshrd.group2.article_mgmt.model.dto.response.BookmarkResponse;
 import kshrd.group2.article_mgmt.model.entity.AppUser;
 import kshrd.group2.article_mgmt.model.entity.Article;
 import kshrd.group2.article_mgmt.model.entity.Bookmark;
+import kshrd.group2.article_mgmt.repository.ArticleRepository;
 import kshrd.group2.article_mgmt.repository.BookmarkRepository;
 import kshrd.group2.article_mgmt.service.BookmarkService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookmarkServiceImpl implements BookmarkService {
     private final BookmarkRepository bookmarkRepository;
+    private final ArticleRepository articleRepository;
+
     @Override
     public List<BookmarkResponse> getAllBookmarks(Integer page, Integer size, Sort.Direction direction) {
         Sort sort = Sort.by(direction, "editedAt", "createdAt", "bookmarkId");
@@ -39,14 +42,12 @@ public class BookmarkServiceImpl implements BookmarkService {
             throw new BadRequestException("This article has been already added");
         }
 
-
-//        Article article = articleRepository.findById(articleId)
-//                .orElseThrow(() -> new NotFoundException("Article not found with id: " + articleId));
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new NotFoundException("Article not found with id: " + articleId));
 
         Bookmark bookmark = Bookmark.builder()
-//                .article(existingBookmark.getArticle())
-//                .article(article)
-//                .user(getCurrentUser())
+                .article(article)
+                .user(getCurrentUser())
                 .build();
 
         return bookmarkRepository.save(bookmark).toResponse();
