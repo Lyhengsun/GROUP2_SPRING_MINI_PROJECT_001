@@ -82,4 +82,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleInvalidException(InvalidException e) {
         return problemDetailResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(DataConflictException.class)
+    public ResponseEntity<?> handleDataConflictException(DataConflictException e) {
+        return problemDetailResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+    }
 }
