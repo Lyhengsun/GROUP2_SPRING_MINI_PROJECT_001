@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new NotFoundException("Comment not found with ID: " + commentId));
 
         if(!comment.getUser().getUserId().equals(currentUser.getUserId())){
-            throw new AccessDeniedException("you do not have permission to delete this commend. ");
+            throw new NotFoundException("you do not have permission to delete this commend. ");
         }
             commentRepository.deleteById(commentId);
     }
@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new NotFoundException("Comment not found with ID: " + commentId));
 
         if (!comment.getUser().getUserId().equals(currentUser.getUserId())) {
-            throw new AccessDeniedException("You do not have permission to view this comment.");
+            throw new NotFoundException("You do not have permission to view this comment.");
         }
         return comment.toResponse();
     }
@@ -63,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("Comment not found with ID: " + commentId));
         if (!comment.getUser().getUserId().equals(currentUser.getUserId())) {
-            throw new AccessDeniedException("You do not have permission to view this comment.");
+            throw new NotFoundException("You do not have permission to view this comment.");
         }
         comment.setContent(commentRequest.getContent());
         comment.setEditedAt(LocalDateTime.now());
