@@ -24,6 +24,7 @@ public class AppUserRequest {
     private String username;
 
     @NotBlank(message = "Email is required")
+    @Size(max = 255, message = "Email can't be longer than 255 characters")
     @Email(message = "Invalid email format")
     private String email;
 

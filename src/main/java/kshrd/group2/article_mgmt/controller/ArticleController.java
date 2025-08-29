@@ -2,6 +2,7 @@ package kshrd.group2.article_mgmt.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequestMapping("/api/v1/articles")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Article Controller")
 public class ArticleController extends BaseController{
 
     private final ArticleService articleService;
