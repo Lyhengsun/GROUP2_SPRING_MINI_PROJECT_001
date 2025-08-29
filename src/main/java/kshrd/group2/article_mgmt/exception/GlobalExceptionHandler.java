@@ -1,5 +1,7 @@
 package kshrd.group2.article_mgmt.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -21,17 +23,17 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-//    user not own that resource exception
+    // user not own that resource exception
 
     @ExceptionHandler(AccessDeniedException.class)
-    private ResponseEntity<Object> handelAccessDeniedException(AccessDeniedException ex){
+    private ResponseEntity<Object> handelAccessDeniedException(AccessDeniedException ex) {
 
         Map<String, Object> errorResponse = new LinkedHashMap<>();
         errorResponse.put("timestamp", LocalDateTime.now());
         errorResponse.put("status", HttpStatus.FORBIDDEN.value());
         errorResponse.put("error", "Forbidden");
         errorResponse.put("message", ex.getMessage());
-        return new ResponseEntity<>(errorResponse,HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 
     }
 
@@ -112,5 +114,30 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataConflictException.class)
     public ResponseEntity<?> handleDataConflictException(DataConflictException e) {
         return problemDetailResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidJWTException.class)
+    public ResponseEntity<?> handleSignatureException(InvalidJWTException e) {
+        return problemDetailResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionHandler.class);
+
+    // Handle all unhandled exceptions
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleAllUnhandledExceptions(Exception e) {
+        logger.error("Unhandled exception occurred", e);
+        StackTraceElement[] stack = e.getStackTrace();
+        String errorMsg = "";
+        if (stack.length > 0) {
+            StackTraceElement origin = stack[0];
+            errorMsg = e.getClass().getSimpleName() + " at " + origin.getClassName() + "."
+                    + origin.getMethodName() + "(" + origin.getFileName() + ":"
+                    + origin.getLineNumber() + ")";
+        } else {
+            errorMsg = e.getClass().getSimpleName();
+        }
+
+        return problemDetailResponseEntity(errorMsg, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

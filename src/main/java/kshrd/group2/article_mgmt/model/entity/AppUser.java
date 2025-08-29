@@ -65,7 +65,7 @@ public class AppUser extends BaseEntityAudit implements UserDetails {
     public AppUserResponse toResponse() {
         return AppUserResponse.builder()
                 .userId(userId)
-                .appUsername(appUsername)
+                .username(appUsername)
                 .email(email)
                 .role(role)
                 .address(address)

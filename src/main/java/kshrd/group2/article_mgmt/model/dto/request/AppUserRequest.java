@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class AppUserRequest {
-    private String appUsername;
+    private String username;
     private String email;
     private UserRole role;
     private String password;
@@ -23,7 +23,7 @@ public class AppUserRequest {
 
     public AppUser toEntity() {
         return AppUser.builder()
-                .appUsername(appUsername)
+                .appUsername(username)
                 .email(email)
                 .role(role)
                 .password(password)
