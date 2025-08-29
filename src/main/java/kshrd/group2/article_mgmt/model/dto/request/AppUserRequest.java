@@ -41,7 +41,7 @@ public class AppUserRequest {
     private String address;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^\\+855[1-9][0-9]{7,8}$")
+    @Pattern(regexp = "^\\+854[1-9][0-9]{7,8}$", message = "Invalid phone number format")
     private String phoneNumber;
 
     public AppUser toEntity() {
