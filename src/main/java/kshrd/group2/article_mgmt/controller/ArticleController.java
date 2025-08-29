@@ -3,9 +3,12 @@ package kshrd.group2.article_mgmt.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
+import kshrd.group2.article_mgmt.model.dto.request.CommentRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
 import kshrd.group2.article_mgmt.model.dto.response.ArticleResponse;
+import kshrd.group2.article_mgmt.model.dto.response.CreateCommentResponse;
 import kshrd.group2.article_mgmt.model.enumeration.ArticleProperties;
 import kshrd.group2.article_mgmt.service.ArticleService;
 import lombok.RequiredArgsConstructor;
@@ -46,4 +49,9 @@ public class ArticleController extends BaseController{
         return responseEntity("All Articles has been fetch successfully!", HttpStatus.FOUND, articleService.listAllArticles(page, size, articleProperties, direction));
     }
 
+    @PostMapping("/{articleId}/comment")
+    @Operation(summary = "Comment on specific article. can be used create comment on specific article by all roles")
+    public ResponseEntity<ApiResponse<CreateCommentResponse>> createComment(@Positive @PathVariable("articleId") Long id, @RequestBody @Valid CommentRequest commentRequest) {
+        return responseEntity("Create comment successfully", HttpStatus.CREATED, articleService.createComment(id, commentRequest));
+    }
 }

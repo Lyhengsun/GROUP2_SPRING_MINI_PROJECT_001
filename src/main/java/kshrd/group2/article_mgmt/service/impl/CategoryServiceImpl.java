@@ -79,16 +79,19 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void increaseAmountOfCategoryArticle(Long categoryId) {
+    public Category increaseAmountOfCategoryArticle(Long categoryId) {
         Category category = findCategoryById(categoryId);
         category.setAmountOfArticle(category.getAmountOfArticle()+1);
+        return categoryRepository.save(category);
     }
 
     @Override
-    public void decreaseAmountOfCategoryArticle(Long categoryId) {
+    public Category decreaseAmountOfCategoryArticle(Long categoryId) {
         Category category = findCategoryById(categoryId);
         if (category.getAmountOfArticle() > 0) {
             category.setAmountOfArticle(category.getAmountOfArticle()-1);
+            return categoryRepository.save(category);
         }
+        return category;
     }
 }

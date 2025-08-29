@@ -2,6 +2,7 @@ package kshrd.group2.article_mgmt.model.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import kshrd.group2.article_mgmt.model.entity.Comment;
 import lombok.*;
 
 /**
@@ -19,4 +20,8 @@ public class CommentRequest {
     @NotBlank(message = "Content of comment is required")
     @Size(max = 500, message = "Comment content must be at most 500 characters")
     private String content;
+
+    public Comment toCommentEntity() {
+        return new Comment(null, this.content, null, null);
+    }
 }

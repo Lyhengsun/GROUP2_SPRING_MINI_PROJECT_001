@@ -6,29 +6,30 @@ import kshrd.group2.article_mgmt.exception.BadRequestException;
 import kshrd.group2.article_mgmt.exception.DataConflictException;
 import kshrd.group2.article_mgmt.exception.NotFoundException;
 import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
+import kshrd.group2.article_mgmt.model.dto.request.CommentRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ArticleResponse;
-import kshrd.group2.article_mgmt.model.entity.AppUser;
-import kshrd.group2.article_mgmt.model.entity.Article;
-import kshrd.group2.article_mgmt.model.entity.Category;
-import kshrd.group2.article_mgmt.model.entity.CategoryArticle;
+import kshrd.group2.article_mgmt.model.dto.response.CommentResponse;
+import kshrd.group2.article_mgmt.model.dto.response.CreateCommentResponse;
+import kshrd.group2.article_mgmt.model.entity.*;
 import kshrd.group2.article_mgmt.model.enumeration.ArticleProperties;
 import kshrd.group2.article_mgmt.model.enumeration.UserRole;
 import kshrd.group2.article_mgmt.repository.ArticleRepository;
 import kshrd.group2.article_mgmt.repository.CategoryArticleRepository;
 import kshrd.group2.article_mgmt.repository.CategoryRepository;
+import kshrd.group2.article_mgmt.repository.CommentRepository;
 import kshrd.group2.article_mgmt.service.ArticleService;
+import kshrd.group2.article_mgmt.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.nio.file.AccessDeniedException;
-import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,8 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final CategoryRepository categoryRepository;
     private final CategoryArticleRepository categoryArticleRepository;
+    private final CommentRepository commentRepository;
+    private final CategoryService categoryService;
 
     public AppUser getCurrentUser() {
         return (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -95,10 +98,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         // save category_articles
         for (Long id : categoryIds) {
-            Category category = categoryRepository
-                    .findById(id)
-                    .orElseThrow(() -> new NotFoundException("Categories not found: " + id));
-
+            Category category = categoryService.increaseAmountOfCategoryArticle(id);
             CategoryArticle categoryArticle = CategoryArticle.builder()
                     .article(article) // bidirectional link
                     .category(category)
@@ -155,5 +155,34 @@ public class ArticleServiceImpl implements ArticleService {
 
 
         return articleRepository.save(article).toResponse();
+    }
+
+    @Override
+    public CreateCommentResponse createComment(Long id, CommentRequest commentRequest) {
+
+        // validate article id not found
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Article with id: " + id + " is not found"));
+
+        AppUser user = getCurrentUser();
+
+        Comment comment = commentRequest.toCommentEntity();
+        comment.setArticle(article);
+        comment.setUser(user);
+        commentRepository.save(comment);
+
+        return CreateCommentResponse.builder()
+                .articleId(article.getArticleId())
+                .title(article.getTitle())
+                .description(article.getDescription())
+                .userId(article.getUser().getUserId())
+                .categories(article.getCategoryArticles().stream().map(cat -> cat.getCategory().getCategoryName()).toList())
+                .createdAt(LocalDateTime.now())
+                .editedAt(LocalDateTime.now())
+                .commentResponses(article.getComments().stream()
+                        .map(Comment::toResponse)
+                        .sorted(Comparator.comparing(CommentResponse::getCommentId).reversed())
+                        .toList())
+                .build();
     }
 }

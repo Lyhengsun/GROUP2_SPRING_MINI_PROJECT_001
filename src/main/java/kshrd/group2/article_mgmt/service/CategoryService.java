@@ -1,9 +1,9 @@
 package kshrd.group2.article_mgmt.service;
 
-import jakarta.validation.constraints.Positive;
 import kshrd.group2.article_mgmt.model.dto.request.CategoryRequest;
 import kshrd.group2.article_mgmt.model.dto.response.CategoryResponse;
 import kshrd.group2.article_mgmt.model.dto.response.PagedResponse;
+import kshrd.group2.article_mgmt.model.entity.Category;
 import kshrd.group2.article_mgmt.model.enumeration.CategoryProperty;
 import org.springframework.data.domain.Sort;
 
@@ -19,6 +19,6 @@ public interface CategoryService {
 
     void deleteCategory(Long id);
 
-    void increaseAmountOfCategoryArticle(Long categoryId);
-    void decreaseAmountOfCategoryArticle(Long categoryId);
+    Category increaseAmountOfCategoryArticle(Long categoryId);
+    Category decreaseAmountOfCategoryArticle(Long categoryId);
 }
