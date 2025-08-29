@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import kshrd.group2.article_mgmt.exception.NotFoundException;
+import kshrd.group2.article_mgmt.model.dto.request.UpdateAppUserRequest;
 import kshrd.group2.article_mgmt.model.dto.response.AppUserResponse;
 import kshrd.group2.article_mgmt.model.entity.AppUser;
 import kshrd.group2.article_mgmt.repository.AppUserRepository;
@@ -17,6 +18,10 @@ import lombok.RequiredArgsConstructor;
 public class AppUserServiceImpl implements AppUserService {
     private final AppUserRepository appUserRepository;
 
+    public AppUser getCurrentUser() {
+        return (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser foundAppUser = appUserRepository.findByEmail(username)
@@ -25,13 +30,19 @@ public class AppUserServiceImpl implements AppUserService {
         return foundAppUser;
     }
 
-    public AppUser getCurrentUser() {
-        return (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
     @Override
     public AppUserResponse getCurrentProfile() {
         return getCurrentUser().toResponse();
     }
 
+    @Override
+    public AppUserResponse updateCurrentUser(UpdateAppUserRequest request) {
+        AppUser foundUser = appUserRepository.findByEmail(getCurrentUser().getEmail())
+                .orElseThrow(() -> new NotFoundException("User doesn't exist"));
+
+        foundUser.setAddress(request.getAddress().trim());
+        foundUser.setPhoneNumber(request.getPhoneNumber().trim());
+
+        return appUserRepository.save(foundUser).toResponse();
+    }
 }

@@ -48,7 +48,7 @@ public class AppUser extends BaseEntityAudit implements UserDetails {
     @Column(name = "phone_number", nullable = false, length = 15)
     private String phoneNumber;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
 
     @Override
@@ -65,7 +65,7 @@ public class AppUser extends BaseEntityAudit implements UserDetails {
     public AppUserResponse toResponse() {
         return AppUserResponse.builder()
                 .userId(userId)
-                .appUsername(appUsername)
+                .username(appUsername)
                 .email(email)
                 .role(role)
                 .address(address)

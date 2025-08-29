@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import kshrd.group2.article_mgmt.model.dto.response.CategoryResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,5 +44,15 @@ public class Category extends BaseEntityAudit {
         if (amountOfArticle == null) {
             amountOfArticle = 0;
         }
+    }
+
+    public CategoryResponse toResponse() {
+        return CategoryResponse.builder()
+                .categoryId(this.categoryId)
+                .categoryName(this.categoryName)
+                .amountOfArticles(this.amountOfArticle)
+                .createdAt(this.getCreatedAt())
+                .editedAt(this.getEditedAt())
+                .build();
     }
 }

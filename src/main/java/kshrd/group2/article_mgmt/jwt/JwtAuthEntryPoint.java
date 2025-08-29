@@ -34,7 +34,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
     Map<String, Object> body = new LinkedHashMap<>();
     body.put("timestamp", Instant.now().toString());
     body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-    body.put("error", "Unauthorized");
+    body.put("error", "Please login to access this resource");
     body.put("message", msg);
     body.put("path", request.getRequestURI());
 

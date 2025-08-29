@@ -1,5 +1,7 @@
 package kshrd.group2.article_mgmt.model.dto.response;
 
+import java.time.LocalDateTime;
+
 import kshrd.group2.article_mgmt.model.enumeration.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,11 +14,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class AppUserResponse extends BaseEntityAuditResponse {
+public class AppUserResponse {
     private Long userId;
-    private String appUsername;
+    private String username;
     private String email;
     private UserRole role;
     private String address;
     private String phoneNumber;
+    private LocalDateTime createdAt;
+    private LocalDateTime editedAt;
 }
