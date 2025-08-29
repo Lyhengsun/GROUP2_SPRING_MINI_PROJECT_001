@@ -21,6 +21,7 @@ import kshrd.group2.article_mgmt.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -118,7 +119,6 @@ public class ArticleServiceImpl implements ArticleService {
     public void deleteArticleById(Long articleId) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new NotFoundException("Article with id: " + articleId + " is not found"));
-
         if (getCurrentUser().getRole() != UserRole.ROLE_AUTHOR &&
             !article.getUser().getUserId().equals(getCurrentUser().getUserId())) {
             throw new ForbiddenException("You don’t have permission to delete this article");
@@ -139,8 +139,7 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new NotFoundException("Article with id: " + articleId + " is not found"));
 
-        if (getCurrentUser().getRole() != UserRole.ROLE_AUTHOR &&
-            !article.getUser().getUserId().equals(getCurrentUser().getUserId())) {
+        if (!article.getUser().getUserId().equals(getCurrentUser().getUserId())) {
             throw new ForbiddenException("You don’t have permission to update this article");
         }
 
@@ -164,7 +163,11 @@ public class ArticleServiceImpl implements ArticleService {
             throw new BadRequestException("Duplicate category ids: " + duplicateIds);
         }
 
-        List<Category> newCategories = categoryRepository.findAllById(newCategoryIds);
+        List<Category> newCategories = categoryRepository.findAllByUserUserIdAndCategoryIdIn(
+                getCurrentUser().getUserId(),
+                newCategoryIds
+        );
+
         Set<Long> foundIds = newCategories.stream()
                 .map(Category::getCategoryId)
                 .collect(Collectors.toSet());
@@ -172,10 +175,11 @@ public class ArticleServiceImpl implements ArticleService {
                 .filter(id -> !foundIds.contains(id))
                 .toList();
         if (!notFoundIds.isEmpty()) {
-            throw new BadRequestException("Categories not found: " + notFoundIds);
+            throw new BadRequestException("Categories not found or not owned by current user: " + notFoundIds);
         }
 
         categoryArticleRepository.deleteByArticle(article);
+        categoryArticleRepository.flush();
 
         Set<Long> newCategoryIdsSet = new HashSet<>(newCategoryIds);
 
@@ -197,8 +201,6 @@ public class ArticleServiceImpl implements ArticleService {
 
         return articleRepository.save(article).toResponse();
     }
-
-
 
     @Override
     public ArticleCommentResponse createComment(Long id, CommentRequest commentRequest) {
