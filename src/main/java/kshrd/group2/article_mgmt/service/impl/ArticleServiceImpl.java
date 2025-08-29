@@ -3,13 +3,12 @@ package kshrd.group2.article_mgmt.service.impl;
 import jakarta.transaction.Transactional;
 import kshrd.group2.article_mgmt.exception.ForbiddenException;
 import kshrd.group2.article_mgmt.exception.BadRequestException;
-import kshrd.group2.article_mgmt.exception.DataConflictException;
 import kshrd.group2.article_mgmt.exception.NotFoundException;
 import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
 import kshrd.group2.article_mgmt.model.dto.request.CommentRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ArticleResponse;
 import kshrd.group2.article_mgmt.model.dto.response.CommentResponse;
-import kshrd.group2.article_mgmt.model.dto.response.CreateCommentResponse;
+import kshrd.group2.article_mgmt.model.dto.response.ArticleCommentResponse;
 import kshrd.group2.article_mgmt.model.entity.*;
 import kshrd.group2.article_mgmt.model.enumeration.ArticleProperties;
 import kshrd.group2.article_mgmt.model.enumeration.UserRole;
@@ -24,12 +23,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.nio.file.AccessDeniedException;
 
 @Service
 @RequiredArgsConstructor
@@ -158,7 +155,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public CreateCommentResponse createComment(Long id, CommentRequest commentRequest) {
+    public ArticleCommentResponse createComment(Long id, CommentRequest commentRequest) {
 
         // validate article id not found
         Article article = articleRepository.findById(id)
@@ -171,7 +168,29 @@ public class ArticleServiceImpl implements ArticleService {
         comment.setUser(user);
         commentRepository.save(comment);
 
-        return CreateCommentResponse.builder()
+        return ArticleCommentResponse.builder()
+                .articleId(article.getArticleId())
+                .title(article.getTitle())
+                .description(article.getDescription())
+                .userId(article.getUser().getUserId())
+                .categories(article.getCategoryArticles().stream().map(cat -> cat.getCategory().getCategoryName()).toList())
+                .createdAt(LocalDateTime.now())
+                .editedAt(LocalDateTime.now())
+                .commentResponses(article.getComments().stream()
+                        .map(Comment::toResponse)
+                        .sorted(Comparator.comparing(CommentResponse::getCommentId).reversed())
+                        .toList())
+                .build();
+    }
+
+    @Override
+    public ArticleCommentResponse getAllCommentByArticleId(Long id) {
+
+        // validate article id not found
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Article with id: " + id + " is not found"));
+
+        return ArticleCommentResponse.builder()
                 .articleId(article.getArticleId())
                 .title(article.getTitle())
                 .description(article.getDescription())

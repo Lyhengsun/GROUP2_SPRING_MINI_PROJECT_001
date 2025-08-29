@@ -8,11 +8,10 @@ import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
 import kshrd.group2.article_mgmt.model.dto.request.CommentRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
 import kshrd.group2.article_mgmt.model.dto.response.ArticleResponse;
-import kshrd.group2.article_mgmt.model.dto.response.CreateCommentResponse;
+import kshrd.group2.article_mgmt.model.dto.response.ArticleCommentResponse;
 import kshrd.group2.article_mgmt.model.enumeration.ArticleProperties;
 import kshrd.group2.article_mgmt.service.ArticleService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,13 +44,19 @@ public class ArticleController extends BaseController{
     //Get all articles that allow all roles
     @GetMapping
     @Operation(summary = "Get all articles", description = "Can be use by all role")
-    public ResponseEntity<ApiResponse<List<ArticleResponse>>> listAllArticles(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, ArticleProperties articleProperties, Sort.Direction direction){
+    public ResponseEntity<ApiResponse<List<ArticleResponse>>> listAllArticles(@RequestParam(defaultValue = "1") @Positive int page, @RequestParam(defaultValue = "10") int size, ArticleProperties articleProperties, Sort.Direction direction){
         return responseEntity("All Articles has been fetch successfully!", HttpStatus.FOUND, articleService.listAllArticles(page, size, articleProperties, direction));
     }
 
     @PostMapping("/{articleId}/comment")
     @Operation(summary = "Comment on specific article. can be used create comment on specific article by all roles")
-    public ResponseEntity<ApiResponse<CreateCommentResponse>> createComment(@Positive @PathVariable("articleId") Long id, @RequestBody @Valid CommentRequest commentRequest) {
+    public ResponseEntity<ApiResponse<ArticleCommentResponse>> createComment(@Positive @PathVariable("articleId") Long id, @RequestBody @Valid CommentRequest commentRequest) {
         return responseEntity("Create comment successfully", HttpStatus.CREATED, articleService.createComment(id, commentRequest));
+    }
+
+    @GetMapping("/{articleId}/comment")
+    @Operation(summary = "Get all comments by article id. can be used by all roles")
+    public ResponseEntity<ApiResponse<ArticleCommentResponse>> getAllCommentByArticleId(@Positive @PathVariable("articleId") Long id) {
+        return responseEntity("", HttpStatus.OK, articleService.getAllCommentByArticleId(id));
     }
 }

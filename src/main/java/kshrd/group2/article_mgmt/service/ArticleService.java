@@ -2,12 +2,10 @@ package kshrd.group2.article_mgmt.service;
 
 import jakarta.validation.Valid;
 import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
 import kshrd.group2.article_mgmt.model.dto.request.CommentRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ArticleResponse;
-import kshrd.group2.article_mgmt.model.dto.response.CreateCommentResponse;
+import kshrd.group2.article_mgmt.model.dto.response.ArticleCommentResponse;
 import kshrd.group2.article_mgmt.model.enumeration.ArticleProperties;
 import org.springframework.data.domain.Sort;
 
@@ -24,5 +22,7 @@ public interface ArticleService {
 
     ArticleResponse updateArticleById(@Positive Long articleId, @Valid ArticleRequest request);
 
-    CreateCommentResponse createComment(@Positive Long id, @Valid CommentRequest commentRequest);
+    ArticleCommentResponse createComment(@Positive Long id, @Valid CommentRequest commentRequest);
+
+    ArticleCommentResponse getAllCommentByArticleId(@Positive Long id);
 }

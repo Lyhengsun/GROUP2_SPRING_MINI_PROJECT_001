@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateCommentResponse {
+public class ArticleCommentResponse {
     private Long articleId;
     private String title;
     private String description;
