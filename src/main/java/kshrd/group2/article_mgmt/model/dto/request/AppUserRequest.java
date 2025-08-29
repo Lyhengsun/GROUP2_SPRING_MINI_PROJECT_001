@@ -20,7 +20,7 @@ import lombok.Setter;
 @Builder
 public class AppUserRequest {
     @NotBlank(message = "Username is required")
-    @Size(min = 8, max = 100, message = "Username need to be between 8 and 100 characters")
+    @Size(min = 3, max = 100, message = "Username need to be between 3 and 100 characters")
     private String username;
 
     @NotBlank(message = "Email is required")
