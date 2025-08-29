@@ -65,6 +65,10 @@ public class ArticleServiceImpl implements ArticleService {
         // get current user
         AppUser user = getCurrentUser();
 
+        //Trim input
+        articleRequest.setTitle(articleRequest.getTitle().trim());
+        articleRequest.setDescription(articleRequest.getDescription().trim());
+
         // validate duplicate categoryIds
         List<Long> categoryIds = articleRequest.getCategoryIds();
         Set<Long> uniqueIds = new HashSet<>();
@@ -143,8 +147,8 @@ public class ArticleServiceImpl implements ArticleService {
             throw new ForbiddenException("You don’t have permission to update this article");
         }
 
-        article.setTitle(request.getTitle());
-        article.setDescription(request.getDescription());
+        article.setTitle(request.getTitle().trim());
+        article.setDescription(request.getDescription().trim());
 
         List<Category> oldCategories = categoryArticleRepository.findAllByArticle(article)
                 .stream()

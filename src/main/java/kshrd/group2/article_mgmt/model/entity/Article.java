@@ -43,8 +43,8 @@ public class Article extends BaseEntityAudit {
     public ArticleResponse toResponse() {
         return ArticleResponse.builder()
                 .articleId(articleId)
-                .title(title)
-                .description(description)
+                .title(title.trim())
+                .description(description.trim())
                 .userId(user.getUserId())
                 .categories(categoryArticles.stream()
                         .map(ca -> ca.getCategory().getCategoryName())

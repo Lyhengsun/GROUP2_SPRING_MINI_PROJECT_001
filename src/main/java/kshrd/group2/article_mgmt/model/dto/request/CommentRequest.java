@@ -22,6 +22,6 @@ public class CommentRequest {
     private String content;
 
     public Comment toCommentEntity() {
-        return new Comment(null, this.content, null, null);
+        return new Comment(null, this.content.trim(), null, null);
     }
 }
