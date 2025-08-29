@@ -40,8 +40,8 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser foundUser = appUserRepository.findByEmail(getCurrentUser().getEmail())
                 .orElseThrow(() -> new NotFoundException("User doesn't exist"));
 
-        foundUser.setAddress(request.getAddress());
-        foundUser.setPhoneNumber(request.getPhoneNumber());
+        foundUser.setAddress(request.getAddress().trim());
+        foundUser.setPhoneNumber(request.getPhoneNumber().trim());
 
         return appUserRepository.save(foundUser).toResponse();
     }

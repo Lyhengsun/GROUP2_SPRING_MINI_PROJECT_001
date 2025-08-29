@@ -25,6 +25,6 @@ public class ArticleRequest {
     private List<@NotNull(message = "Categories not found: [null]") @Positive Long> categoryIds;
 
     public Article toArticleEntity() {
-        return new Article(null, this.title, this.description, null, null, null);
+        return new Article(null, this.title.trim(), this.description.trim(), null, null, null);
     }
 }

@@ -20,7 +20,7 @@ public class CategoryRequest {
     public Category toEntity() {
         return Category.builder()
                 .categoryId(null)
-                .categoryName(this.categoryName)
+                .categoryName(this.categoryName.trim())
                 .build();
     }
 }
