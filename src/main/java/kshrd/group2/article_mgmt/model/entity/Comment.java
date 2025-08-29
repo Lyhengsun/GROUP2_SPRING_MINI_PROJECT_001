@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import kshrd.group2.article_mgmt.model.dto.response.CommentResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,4 +37,14 @@ public class Comment extends BaseEntityAudit {
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private AppUser user;
+
+    public CommentResponse toResponse (){
+        return new CommentResponse().builder()
+                .commentId(commentId)
+                .content(content)
+                .createdAt(getCreatedAt())
+                .editedAt(getEditedAt())
+                .userId(user.getUserId())
+                .build();
+    }
 }

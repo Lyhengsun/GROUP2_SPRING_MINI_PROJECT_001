@@ -23,7 +23,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
       throws IOException, ServletException {
     ObjectMapper objectMapper = new ObjectMapper();
     response.setContentType("application/json");
-    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
     String msg = (String) request.getAttribute("exception");
 
@@ -33,8 +33,8 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
 
     Map<String, Object> body = new LinkedHashMap<>();
     body.put("timestamp", Instant.now().toString());
-    body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-    body.put("error", "Unauthorized");
+    body.put("status", HttpServletResponse.SC_FORBIDDEN);
+    body.put("error", "You do not have permission to access this resource.");
     body.put("message", msg);
     body.put("path", request.getRequestURI());
 

@@ -1,6 +1,7 @@
 package kshrd.group2.article_mgmt.repository;
 
 import kshrd.group2.article_mgmt.model.entity.Category;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,6 +2,9 @@ package kshrd.group2.article_mgmt.service;
 
 import jakarta.validation.Valid;
 import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ArticleResponse;
 import kshrd.group2.article_mgmt.model.enumeration.ArticleProperties;
 import org.springframework.data.domain.Sort;
@@ -14,4 +17,8 @@ public interface ArticleService {
     List<ArticleResponse> listAllArticles(int page, int size, ArticleProperties articleProperties, Sort.Direction direction);
 
     ArticleResponse createArticle(@Valid ArticleRequest articleRequest);
+
+    void deleteArticleById(Long articleId);
+
+    ArticleResponse updateArticleById(@Positive Long articleId, @Valid ArticleRequest request);
 }
