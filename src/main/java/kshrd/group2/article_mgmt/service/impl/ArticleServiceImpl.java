@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -111,48 +112,93 @@ public class ArticleServiceImpl implements ArticleService {
         return savedArticle.toResponse();
     }
 
+
     @Override
     @Transactional
     public void deleteArticleById(Long articleId) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new NotFoundException("Article with id: " + articleId + " is not found"));
+
+        if (getCurrentUser().getRole() != UserRole.ROLE_AUTHOR &&
+            !article.getUser().getUserId().equals(getCurrentUser().getUserId())) {
+            throw new ForbiddenException("You don’t have permission to delete this article");
+        }
+
+        article.getCategoryArticles()
+                .stream()
+                .map(cat -> cat.getCategory().getCategoryId())
+                .forEach(categoryService::decreaseAmountOfCategoryArticle);
+
         articleRepository.delete(article);
     }
 
     @Override
     @Transactional
     public ArticleResponse updateArticleById(Long articleId, ArticleRequest request) {
-        Article article = articleRepository.findById(articleId).orElseThrow(() -> new NotFoundException("Article with id: " + articleId + " is not found"));
 
-        if (!article.getUser().getUserId().equals(getCurrentUser().getUserId())) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new NotFoundException("Article with id: " + articleId + " is not found"));
+
+        if (getCurrentUser().getRole() != UserRole.ROLE_AUTHOR &&
+            !article.getUser().getUserId().equals(getCurrentUser().getUserId())) {
             throw new ForbiddenException("You don’t have permission to update this article");
         }
+
         article.setTitle(request.getTitle());
         article.setDescription(request.getDescription());
 
-        categoryArticleRepository.deleteByArticle(article);
-        categoryArticleRepository.flush();
+        List<Category> oldCategories = categoryArticleRepository.findAllByArticle(article)
+                .stream()
+                .map(CategoryArticle::getCategory)
+                .toList();
+        Set<Long> oldCategoryIds = oldCategories.stream()
+                .map(Category::getCategoryId)
+                .collect(Collectors.toSet());
 
-        List<Category> categories = categoryRepository.findAllById(request.getCategoryIds());
+        List<Long> newCategoryIds = request.getCategoryIds();
 
-        for (Long req : request.getCategoryIds()) {
-            if (!categories.contains(categoryRepository.findById(req).orElseThrow(() ->
-                    new NotFoundException("Category with id: " + req + " is not found")))) {
-                throw new NotFoundException("Category with id: " + req + " is not found");
-            }
-
+        Set<Long> duplicateIds = newCategoryIds.stream()
+                .filter(id -> Collections.frequency(newCategoryIds, id) > 1)
+                .collect(Collectors.toSet());
+        if (!duplicateIds.isEmpty()) {
+            throw new BadRequestException("Duplicate category ids: " + duplicateIds);
         }
-        List<CategoryArticle> categoryArticles = categories.stream()
+
+        List<Category> newCategories = categoryRepository.findAllById(newCategoryIds);
+        Set<Long> foundIds = newCategories.stream()
+                .map(Category::getCategoryId)
+                .collect(Collectors.toSet());
+        List<Long> notFoundIds = newCategoryIds.stream()
+                .filter(id -> !foundIds.contains(id))
+                .toList();
+        if (!notFoundIds.isEmpty()) {
+            throw new BadRequestException("Categories not found: " + notFoundIds);
+        }
+
+        categoryArticleRepository.deleteByArticle(article);
+
+        Set<Long> newCategoryIdsSet = new HashSet<>(newCategoryIds);
+
+        oldCategoryIds.stream()
+                .filter(id -> !newCategoryIdsSet.contains(id))
+                .forEach(categoryService::decreaseAmountOfCategoryArticle);
+
+        newCategoryIdsSet.stream()
+                .filter(id -> !oldCategoryIds.contains(id))
+                .forEach(categoryService::increaseAmountOfCategoryArticle);
+
+        List<CategoryArticle> categoryArticles = newCategories.stream()
                 .map(category -> CategoryArticle.builder()
                         .article(article)
                         .category(category)
-                        .build()).toList();
-
+                        .build())
+                .toList();
         categoryArticleRepository.saveAll(categoryArticles);
-
 
         return articleRepository.save(article).toResponse();
     }
+
+
 
     @Override
     public ArticleCommentResponse createComment(Long id, CommentRequest commentRequest) {

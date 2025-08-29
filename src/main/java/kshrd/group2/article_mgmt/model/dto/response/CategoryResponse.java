@@ -1,7 +1,6 @@
 package kshrd.group2.article_mgmt.model.dto.response;
 
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -9,9 +8,11 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-public class CategoryResponse extends BaseEntityAuditResponse {
+@Builder
+public class CategoryResponse {
     private Long categoryId;
     private String categoryName;
     private Integer amountOfArticles;
+    private LocalDateTime createdAt;
+    private LocalDateTime editedAt;
 }

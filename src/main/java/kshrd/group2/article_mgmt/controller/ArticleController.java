@@ -38,14 +38,14 @@ public class ArticleController extends BaseController{
 
     //Get an article by id that allows all roles
     @GetMapping("/{articleId}")
-    @Operation(summary = "Get an article by id.", description = "Can be use by all role")
+    @Operation(summary = "Get an article by id. Can be use by all role")
     public ResponseEntity<ApiResponse<ArticleResponse>> getArticleById(@PathVariable("articleId") Long articleId){
         return responseEntity("Article with id: " + articleId + " is fetched successfully", HttpStatus.FOUND, articleService.getArticleById(articleId));
     }
 
     //Get all articles that allow all roles
     @GetMapping
-    @Operation(summary = "Get all articles", description = "Can be use by all role")
+    @Operation(summary = "Get all articles. Can be use by all role")
     public ResponseEntity<ApiResponse<List<ArticleResponse>>> listAllArticles(@RequestParam(defaultValue = "1") @Positive int page, @RequestParam(defaultValue = "10") int size, ArticleProperties articleProperties, Sort.Direction direction){
         return responseEntity("All Articles has been fetch successfully!", HttpStatus.FOUND, articleService.listAllArticles(page, size, articleProperties, direction));
     }
@@ -64,7 +64,7 @@ public class ArticleController extends BaseController{
 
     //Delete an article by ID that allow only an AUTHOR role
     @DeleteMapping("/{articleId}")
-    @Operation(summary = "Delete an article by ID" , description = "Can be use by only AUTHOR role")
+    @Operation(summary = "Delete an article by ID. Can be use by only AUTHOR role")
     public ResponseEntity<ApiResponse<ArticleResponse>> deleteArticleById(@Positive @PathVariable Long articleId){
         articleService.deleteArticleById(articleId);
         return responseEntity("Article with id: " + articleId + " is deleted successfully", HttpStatus.OK, null);
