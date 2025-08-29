@@ -46,12 +46,12 @@ public class AppUserRequest {
 
     public AppUser toEntity() {
         return AppUser.builder()
-                .appUsername(username)
-                .email(email)
+                .appUsername(username.trim())
+                .email(email.trim())
                 .role(role)
-                .password(password)
-                .address(address)
-                .phoneNumber(phoneNumber)
+                .password(password.trim())
+                .address(address.trim())
+                .phoneNumber(phoneNumber.trim())
                 .build();
     }
 }

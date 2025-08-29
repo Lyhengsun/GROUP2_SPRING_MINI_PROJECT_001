@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import kshrd.group2.article_mgmt.model.dto.request.UpdateAppUserRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
 import kshrd.group2.article_mgmt.model.dto.response.AppUserResponse;
@@ -33,7 +34,7 @@ public class UserController extends BaseController {
 
     @PutMapping
     @Operation(summary = "Update current user. can be used by all roles")
-    public ResponseEntity<ApiResponse<AppUserResponse>> updateCurrentUser (@RequestBody UpdateAppUserRequest request) {
+    public ResponseEntity<ApiResponse<AppUserResponse>> updateCurrentUser (@RequestBody @Valid UpdateAppUserRequest request) {
         return responseEntity("Updated Current User successfully", appUserService.updateCurrentUser(request));
     }
 }

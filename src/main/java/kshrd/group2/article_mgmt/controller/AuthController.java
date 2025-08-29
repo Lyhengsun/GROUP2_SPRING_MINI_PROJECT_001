@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import kshrd.group2.article_mgmt.model.dto.request.AppUserRequest;
 import kshrd.group2.article_mgmt.model.dto.request.AuthRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
@@ -27,13 +28,13 @@ public class AuthController extends BaseController {
 
     @PostMapping("/login")
     @Operation(summary = "Login with email and password")
-    ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody AuthRequest request) {
+    ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody @Valid AuthRequest request) {
         return responseEntity("Login successfully", HttpStatus.CREATED, authService.login(request));
     }
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
-    ResponseEntity<ApiResponse<AppUserResponse>> register(@RequestBody AppUserRequest request) {
+    ResponseEntity<ApiResponse<AppUserResponse>> register(@RequestBody @Valid AppUserRequest request) {
         return responseEntity("Register successfully", HttpStatus.CREATED, authService.register(request));
     }
 

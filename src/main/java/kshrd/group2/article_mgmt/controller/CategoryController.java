@@ -3,6 +3,7 @@ package kshrd.group2.article_mgmt.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import kshrd.group2.article_mgmt.model.dto.request.CategoryRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
@@ -43,14 +44,14 @@ public class CategoryController extends BaseController{
 
     @PostMapping
     @Operation(summary = "Create new category. can be used by only AUTHOR role")
-    public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(@RequestBody CategoryRequest categoryRequest) {
+    public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(@RequestBody @Valid CategoryRequest categoryRequest) {
         return responseEntity("Created new category successfully", categoryService.createCategory(categoryRequest));
     }
 
     @PutMapping("{category-id}")
     @Operation(summary = "Update category. can be used by only AUTHOR role")
     public ResponseEntity<ApiResponse<CategoryResponse>> updateCategory(@PathVariable("category-id") Long id ,
-                                                                        @RequestBody CategoryRequest categoryRequest) {
+                                                                        @RequestBody @Valid CategoryRequest categoryRequest) {
         return responseEntity("Updated category successfully", categoryService.updateCategory(id, categoryRequest));
     }
 
