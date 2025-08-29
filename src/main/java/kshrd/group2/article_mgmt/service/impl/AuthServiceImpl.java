@@ -66,8 +66,25 @@ public class AuthServiceImpl implements AuthService {
 
         authenticate(request.getEmail(), request.getPassword());
         final UserDetails userDetails = appUserService.loadUserByUsername(request.getEmail());
-        final String token = jwtService.generateToken(userDetails);
-        return new AuthResponse(token);
+        final String token = jwtService.generateAccessToken(userDetails);
+        final String refreshToken = jwtService.generateRefreshToken(userDetails);
+        return new AuthResponse(token, refreshToken);
+    }
+
+    @Override
+    public AuthResponse refreshToken(String refreshToken) {
+        String email = jwtService.extractRefreshEmail(refreshToken);
+        // load user by email
+        // validate token and check if refreshToken expire
+        // regenerate token
+        final UserDetails userDetails = appUserService.loadUserByUsername(email);
+        if (!jwtService.validateRefreshToken(refreshToken, userDetails)) {
+            throw new BadRequestException("Invalid Refresh Token");
+        }
+        
+        String token = jwtService.generateAccessToken(userDetails);
+        String newRefreshToken = jwtService.generateRefreshToken(userDetails);
+        return new AuthResponse(token, newRefreshToken);
     }
 
 }
