@@ -40,7 +40,7 @@ public class CommentController extends BaseController{
         return responseEntity("Get comment successfully",HttpStatus.OK,commentService.getCommentById(commentId));
     }
 
-    @PutMapping("update/{commentId}")
+    @PutMapping("/{commentId}")
     @Operation(summary = "Update comment by `CommendId`, can update your only comment")
     public ResponseEntity<ApiResponse<CommentResponse>> update (@PathVariable("commentId") @Min(value = 1, message = "Comment ID must be a positive number.") Long commentId, @Valid @RequestBody CommentRequest commentRequest){
         return responseEntity("Updated comment successfully",HttpStatus.OK,commentService.update(commentId,commentRequest));
