@@ -56,7 +56,7 @@ public class ArticleController extends BaseController{
         return responseEntity("Create comment successfully", HttpStatus.CREATED, articleService.createComment(id, commentRequest));
     }
 
-    @GetMapping("/{articleId}/comment")
+    @GetMapping("/{articleId}/comments")
     @Operation(summary = "Get all comments by article id. can be used by all roles")
     public ResponseEntity<ApiResponse<ArticleCommentResponse>> getAllCommentByArticleId(@Positive @PathVariable("articleId") Long id) {
         return responseEntity("", HttpStatus.OK, articleService.getAllCommentByArticleId(id));
