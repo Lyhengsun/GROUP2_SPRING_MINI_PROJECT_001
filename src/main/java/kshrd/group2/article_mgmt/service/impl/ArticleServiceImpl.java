@@ -2,6 +2,8 @@ package kshrd.group2.article_mgmt.service.impl;
 
 import jakarta.transaction.Transactional;
 import kshrd.group2.article_mgmt.exception.ForbiddenException;
+import kshrd.group2.article_mgmt.exception.BadRequestException;
+import kshrd.group2.article_mgmt.exception.DataConflictException;
 import kshrd.group2.article_mgmt.exception.NotFoundException;
 import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ArticleResponse;
@@ -22,16 +24,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
-    private final CategoryArticleRepository categoryArticleRepository;
     private final CategoryRepository categoryRepository;
+    private final CategoryArticleRepository categoryArticleRepository;
 
     public AppUser getCurrentUser() {
         return (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -50,6 +55,63 @@ public class ArticleServiceImpl implements ArticleService {
         Page<Article> articlePage = articleRepository.findAll(PageRequest.of(page - 1, size, Sort.by(direction, articleProperties.getFieldName())));
 
         return articlePage.stream().map(Article::toResponse).toList();
+    }
+
+    @Override
+    public ArticleResponse createArticle(ArticleRequest articleRequest) {
+
+        // get current user
+        AppUser user = getCurrentUser();
+
+        // validate duplicate categoryIds
+        List<Long> categoryIds = articleRequest.getCategoryIds();
+        Set<Long> uniqueIds = new HashSet<>();
+        Set<Long> duplicateItems = new HashSet<>();
+        List<Long> notFoundIds = new ArrayList<>();
+
+        for (Long id : categoryIds) {
+            if (!uniqueIds.add(id)) {
+                duplicateItems.add(id);
+            }
+        }
+        if (!duplicateItems.isEmpty())
+            throw new BadRequestException("Duplicate category ids: " + duplicateItems);
+
+        // validate categoryIds not found
+        for (Long id : categoryIds) {
+            if (!categoryRepository.existsCategoryByCategoryId(id)) {
+                notFoundIds.add(id);
+            }
+        }
+        if (!notFoundIds.isEmpty())
+            throw new BadRequestException("Categories not found: " + notFoundIds);
+
+        // prepare data article before save
+        Article article = articleRequest.toArticleEntity();
+        article.setUser(user);
+
+        // initial category article list for saving in Category
+        List<CategoryArticle> categoryArticleList = new ArrayList<>();
+
+        // save category_articles
+        for (Long id : categoryIds) {
+            Category category = categoryRepository
+                    .findById(id)
+                    .orElseThrow(() -> new NotFoundException("Categories not found: " + id));
+
+            CategoryArticle categoryArticle = CategoryArticle.builder()
+                    .article(article) // bidirectional link
+                    .category(category)
+                    .build();
+
+            categoryArticleList.add(categoryArticle);
+        }
+        article.setCategoryArticles(categoryArticleList);
+
+        // save article
+        Article savedArticle = articleRepository.save(article);
+
+        return savedArticle.toResponse();
     }
 
     @Override

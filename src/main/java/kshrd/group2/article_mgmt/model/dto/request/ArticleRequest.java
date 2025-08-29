@@ -1,9 +1,6 @@
 package kshrd.group2.article_mgmt.model.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import kshrd.group2.article_mgmt.model.entity.Article;
 import lombok.*;
 
@@ -24,6 +21,10 @@ public class ArticleRequest {
     @Pattern(regexp = "^[a-zA-Z0-9 .,!?]*$", message = "Description must contain only letters, numbers, spaces, and basic punctuation")
     private String description;
 
-    @NotEmpty(message = "At least one category must be selected")
-    private List<Long> categoryIds;
+    @NotEmpty(message = "categoryIds must not be null")
+    private List<@NotNull(message = "Categories not found: [null]") @Positive Long> categoryIds;
+
+    public Article toArticleEntity() {
+        return new Article(null, this.title, this.description, null, null, null);
+    }
 }

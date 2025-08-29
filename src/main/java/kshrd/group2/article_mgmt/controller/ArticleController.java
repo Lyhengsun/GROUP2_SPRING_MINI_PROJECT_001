@@ -3,13 +3,13 @@ package kshrd.group2.article_mgmt.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import kshrd.group2.article_mgmt.model.dto.request.ArticleRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
 import kshrd.group2.article_mgmt.model.dto.response.ArticleResponse;
 import kshrd.group2.article_mgmt.model.enumeration.ArticleProperties;
 import kshrd.group2.article_mgmt.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +25,17 @@ public class ArticleController extends BaseController{
 
     private final ArticleService articleService;
 
+    // Create new article, can be used by only AUTHOR role
+    @PostMapping
+    @Operation(summary = "Create new article, can be used by only AUTHOR role")
+    public ResponseEntity<ApiResponse<ArticleResponse>> createArticle(@RequestBody @Valid ArticleRequest articleRequest) {
+        return responseEntity("Article created successfully", HttpStatus.CREATED, articleService.createArticle(articleRequest));
+    }
+
     //Get an article by id that allows all roles
     @GetMapping("/{articleId}")
     @Operation(summary = "Get an article by id.", description = "Can be use by all role")
-    public ResponseEntity<ApiResponse<ArticleResponse>> getArticleById(@Positive @PathVariable("articleId") Long articleId){
+    public ResponseEntity<ApiResponse<ArticleResponse>> getArticleById(@PathVariable("articleId") Long articleId){
         return responseEntity("Article with id: " + articleId + " is fetched successfully", HttpStatus.FOUND, articleService.getArticleById(articleId));
     }
 
@@ -39,18 +46,4 @@ public class ArticleController extends BaseController{
         return responseEntity("All Articles has been fetch successfully!", HttpStatus.FOUND, articleService.listAllArticles(page, size, articleProperties, direction));
     }
 
-    //Delete an article by ID that allow only an AUTHOR role
-    @DeleteMapping("/{articleId}")
-    @Operation(summary = "Delete an article by ID" , description = "Can be use by only AUTHOR role")
-    public ResponseEntity<ApiResponse<ArticleResponse>> deleteArticleById(@Positive @PathVariable Long articleId){
-        articleService.deleteArticleById(articleId);
-        return responseEntity("Article with id: " + articleId + " is deleted successfully", HttpStatus.OK, null);
-    }
-
-    //Update an article by id that allows only an AUTHOR role
-    @PutMapping("/{articleId}")
-    @Operation(summary = "Update an article by id. Can be use by only AUTHOR role")
-    public ResponseEntity<ApiResponse<ArticleResponse>> updateArticleById(@Positive @PathVariable Long articleId, @Valid @RequestBody ArticleRequest request){
-        return responseEntity("Article with id: " + articleId + " is updated successfully", HttpStatus.OK, articleService.updateArticleById(articleId, request));
-    }
 }

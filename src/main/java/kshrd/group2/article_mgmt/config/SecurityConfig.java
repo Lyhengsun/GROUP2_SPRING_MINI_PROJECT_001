@@ -40,7 +40,7 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/v1/articles/**").authenticated()
-
+                        .requestMatchers(HttpMethod.POST, "/api/v1/articles").hasRole("AUTHOR")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/articles/**").hasRole("AUTHOR")
                         .requestMatchers(HttpMethod.DELETE, "api/v1/articles/**").hasRole("AUTHOR")
                         .requestMatchers("/api/v1/categories/**").hasRole("AUTHOR")
