@@ -9,7 +9,6 @@ import kshrd.group2.article_mgmt.model.dto.request.CommentRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
 import kshrd.group2.article_mgmt.model.dto.response.CommentResponse;
 import kshrd.group2.article_mgmt.service.CommentService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

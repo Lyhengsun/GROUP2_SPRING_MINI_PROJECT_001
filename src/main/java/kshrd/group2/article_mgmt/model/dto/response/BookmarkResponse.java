@@ -1,6 +1,5 @@
 package kshrd.group2.article_mgmt.model.dto.response;
 
-import kshrd.group2.article_mgmt.model.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
