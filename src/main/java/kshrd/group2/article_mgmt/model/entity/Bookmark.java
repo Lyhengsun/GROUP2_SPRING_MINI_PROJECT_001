@@ -45,6 +45,9 @@ public class Bookmark extends BaseEntityAudit {
                 .title(article.getTitle())
                 .description(article.getDescription())
                 .userId(article.getUser().getUserId())
+                .categories(article.getCategoryArticles().stream()
+                        .map(ca -> ca.getCategory().getCategoryName())
+                        .toList())
                 .createdAt(getCreatedAt())
                 .editedAt(getEditedAt())
                 .build();
