@@ -59,4 +59,19 @@ public class ArticleController extends BaseController{
     public ResponseEntity<ApiResponse<ArticleCommentResponse>> getAllCommentByArticleId(@Positive @PathVariable("articleId") Long id) {
         return responseEntity("", HttpStatus.OK, articleService.getAllCommentByArticleId(id));
     }
+
+    //Delete an article by ID that allow only an AUTHOR role
+    @DeleteMapping("/{articleId}")
+    @Operation(summary = "Delete an article by ID" , description = "Can be use by only AUTHOR role")
+    public ResponseEntity<ApiResponse<ArticleResponse>> deleteArticleById(@Positive @PathVariable Long articleId){
+        articleService.deleteArticleById(articleId);
+        return responseEntity("Article with id: " + articleId + " is deleted successfully", HttpStatus.OK, null);
+    }
+
+    //Update an article by id that allows only an AUTHOR role
+    @PutMapping("/{articleId}")
+    @Operation(summary = "Update an article by id. Can be use by only AUTHOR role")
+    public ResponseEntity<ApiResponse<ArticleResponse>> updateArticleById(@Positive @PathVariable Long articleId, @Valid @RequestBody ArticleRequest request){
+        return responseEntity("Article with id: " + articleId + " is updated successfully", HttpStatus.OK, articleService.updateArticleById(articleId, request));
+    }
 }

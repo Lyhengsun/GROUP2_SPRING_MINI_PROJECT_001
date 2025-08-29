@@ -14,6 +14,7 @@ import lombok.*;
 public class CategoryRequest {
     @NotBlank
     @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
+    @Pattern(regexp = "^[A-Za-z0-9 ]+$", message = "Category name must contain only letters, numbers, and spaces")
     private String categoryName;
 
     public Category toEntity() {
