@@ -1,6 +1,5 @@
 package kshrd.group2.article_mgmt.jwt;
 
-import java.security.SignatureException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,21 +8,19 @@ import java.util.function.Function;
 
 import javax.crypto.SecretKey;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import kshrd.group2.article_mgmt.exception.InvalidJWTException;
 import kshrd.group2.article_mgmt.model.entity.AppUser;
 
 @Component
 public class JwtService {
-  private static final long JWT_TOKEN_VALIDITY = 1 * 20; // 5 hour
+  private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60; // 5 hour
   private static final long REFRESH_TOKEN_VALIDITY = 7 * 24 * 60 * 60; // 7 days
   public static final String ACCESS_SECRET = "FVPr6Q/fVlHGZkElZubC0Zaxv657dPUfDQ4o9DADjSin7+uST1d2A5klMWrMK8fmSl3doyf2wn5zj56VC+qqCg==";
   public static final String REFRESH_SECRET = "GCJO+cUQzm/HaPegk2XG8XqTiPUgo+jcvLFC56sgdzYYTSVAVtgznAKWeDI1LzvoUhG9uIfmUoBU2lqXMOKqXw==";
