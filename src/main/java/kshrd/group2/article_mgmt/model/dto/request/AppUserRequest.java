@@ -19,11 +19,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class AppUserRequest {
-    @Size(min = 8, max = 100, message = "Username need to be between 8 and 100 characters")
     @NotBlank(message = "Username is required")
+    @Size(min = 8, max = 100, message = "Username need to be between 8 and 100 characters")
     private String username;
 
-    @Email
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
     @NotNull(message = "Role is required")
@@ -31,10 +32,15 @@ public class AppUserRequest {
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).*$",
-            message = "Password must contain at least one digit, one lowercase, one uppercase, and one special character")
-    private String password;    
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).*$", message = "Password must contain at least one digit, one lowercase, one uppercase, and one special character")
+    private String password;
+
+    @NotBlank(message = "Address is required")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s,.'\\-#]{5,100}$", message = "Invalid address")
     private String address;
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^\\+855[1-9][0-9]{7,8}$")
     private String phoneNumber;
 
     public AppUser toEntity() {

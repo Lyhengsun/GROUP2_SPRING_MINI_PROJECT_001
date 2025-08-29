@@ -2,6 +2,7 @@ package kshrd.group2.article_mgmt.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import kshrd.group2.article_mgmt.model.dto.request.CommentRequest;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/comments")
 @RequiredArgsConstructor
+@Tag(name = "Comment Controller")
 @SecurityRequirement(name = "bearerAuth")
 public class CommentController extends BaseController{
 

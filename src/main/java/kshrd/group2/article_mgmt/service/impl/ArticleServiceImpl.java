@@ -124,7 +124,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleResponse updateArticleById(Long articleId, ArticleRequest request) {
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new NotFoundException("Article with id: " + articleId + " is not found"));
 
-        if (getCurrentUser().getRole() != UserRole.ROLE_AUTHOR && !article.getUser().getUserId().equals(getCurrentUser().getUserId())) {
+        if (!article.getUser().getUserId().equals(getCurrentUser().getUserId())) {
             throw new ForbiddenException("You don’t have permission to update this article");
         }
         article.setTitle(request.getTitle());

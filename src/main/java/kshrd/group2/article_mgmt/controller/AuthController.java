@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kshrd.group2.article_mgmt.model.dto.request.AppUserRequest;
 import kshrd.group2.article_mgmt.model.dto.request.AuthRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/auths")
 @RequiredArgsConstructor
+@Tag(name = "Auth Controller")
 public class AuthController extends BaseController {
     private final AuthService authService;
 

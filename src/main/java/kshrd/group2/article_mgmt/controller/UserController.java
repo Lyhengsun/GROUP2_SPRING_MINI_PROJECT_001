@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kshrd.group2.article_mgmt.model.dto.request.UpdateAppUserRequest;
 import kshrd.group2.article_mgmt.model.dto.response.ApiResponse;
 import kshrd.group2.article_mgmt.model.dto.response.AppUserResponse;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/v1/users")
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "User Controller")
 @SecurityRequirement(name = "bearerAuth")
 public class UserController extends BaseController {
     private final AppUserService appUserService;
